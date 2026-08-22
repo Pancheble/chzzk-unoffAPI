@@ -1,0 +1,380 @@
+<meta charset="utf-8">
+<title>Document</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ── Notion 디자인 토큰 (DESIGN-notion.md) · 라이트 전용 ──────────
+   마케팅 사이트 실측값입니다. 다크 모드는 두지 않습니다. */
+:root{
+  /* Surface — 따뜻한 종이색 캔버스 위에 흰 카드 */
+  --bg:#F6F5F4;          /* canvas-soft — 시그니처 페이지 바탕 */
+  --surface:#FFFFFF;     /* canvas — 카드·표·사이드바 */
+  --bg-soft:#ECEBE9;     /* 캔버스보다 한 단계 진한 채움 (인라인 코드·표 머리) */
+  --line:#E6E6E6;        /* hairline */
+  --line-soft:#EFEEED;
+
+  /* Text */
+  --ink:#0D0D0D;         /* ink — 검정 95% 알파를 흰 배경에 얹은 값 */
+  --ink-2:#31302E;       /* ink-secondary — 따뜻한 차콜 */
+  --ink-3:#615D59;       /* ink-muted — 스톤 */
+  --ink-faint:#A39E98;   /* ink-faint — 애시. 캡션·플레이스홀더 */
+
+  /* Accent — 구조를 칠하는 색은 이 파랑 하나뿐입니다.
+     ⚠️ Notion 원본은 #0075DE 인데 따뜻한 종이색(#F6F5F4) 위에서 대비가
+        4.19:1 로 본문 링크 기준(4.5:1)에 못 미칩니다. 색상은 그대로 두고
+        명도만 낮춰 4.9:1 을 만들었습니다. 눌린 상태는 원본값 그대로입니다. */
+  --accent:#0069C7;
+  --accent-hover:#005BAB; /* primary-active */
+  --accent-soft:#E7F2FD;
+  --sel:#CFE6FB;
+
+  /* 상태 마커 — Notion 마케팅에는 시맨틱 램프가 없고 "스티커 팔레트"가
+     그 역할을 합니다. 스티커색은 장식용이라 흰 배경에서 12px 글자로 쓰기엔
+     대비가 모자라, 같은 색상(hue)을 유지한 채 어둡게 조정했습니다. */
+  --ok:#137A28;          /* accent-green  #1AAE39 를 어둡게 */
+  --partial:#A34400;     /* accent-orange #DD5B00 를 어둡게 */
+  --weak:#793400;        /* accent-orange-deep 그대로 */
+  --guess:#615D59;       /* ink-muted — 추정은 색을 주지 않습니다 */
+  --post:#1F7573;        /* accent-teal   #2A9D99 를 어둡게 */
+  --auth:#391C57;        /* accent-purple-deep 그대로 */
+  --star:#7A5200;        /* accent-brown  #523410 계열 */
+  /* 🚨 Notion 팔레트에는 빨강이 없습니다. 스트림 키 노출 같은 안전 경고는
+     경고로 읽혀야 하므로 팔레트 밖에서 하나 들였습니다. */
+  --danger:#B3261E;
+  --dead:#B3261E;
+
+  /* Typography — NotionInter 는 Inter 의 자체 튜닝본이라 Inter 로 대체하고,
+     한글은 Inter 에 없으므로 IBM Plex Sans KR 가 받습니다. */
+  --sans:Inter,"IBM Plex Sans KR",-apple-system,system-ui,"Segoe UI","Malgun Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+
+  /* Radius */
+  --r-xs:4px; --r-sm:5px; --r-md:8px; --r-lg:12px; --r-xl:16px;
+
+  --sidebar:280px; --toc:220px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"lnum","locl"}
+::selection{background:var(--sel)}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-hover);text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+.shell{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);min-height:100vh}
+.side{border-right:1px solid var(--line);background:var(--surface);
+  position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.searchbox{padding:20px 16px 12px;border-bottom:1px solid var(--line)}
+.searchbox input{width:100%;padding:9px 11px;font:400 15px/1.33 var(--sans);
+  color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-xs)}
+.searchbox input::placeholder{color:var(--ink-faint)}
+.nav{overflow-y:auto;flex:1;padding:14px 12px 40px}
+/* 그룹 헤더는 항목보다 **진해야** 구분됩니다. 예전에 ink-3 을 쓰는 바람에
+   항목(ink-2)보다 연해서 폴더 경계가 안 보였습니다. */
+.nav .group{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  width:100%;margin:20px 0 4px;padding:6px 10px;border:0;background:none;
+  font:600 12px/1.33 var(--sans);letter-spacing:.5px;text-transform:uppercase;
+  color:var(--ink);text-align:left;cursor:pointer;border-radius:var(--r-sm)}
+.nav .group:first-child{margin-top:4px}
+.nav .group:hover{background:var(--bg-soft)}
+.nav .group::after{content:"\25BE";font-size:11px;color:var(--ink-3);
+  opacity:0;transition:transform .15s,opacity .15s}
+.nav .group:hover::after,
+.nav .group:focus-visible::after{opacity:1}
+.nav .group[aria-expanded="false"]::after{opacity:1;transform:rotate(-90deg)}
+.nav .group[aria-expanded="false"]+.grp{display:none}
+.nav .grp{display:flex;flex-direction:column}
+/* 파일 항목은 헤더(--ink)보다 한 단계 연하게 둡니다. 둘 다 진하면 폴더와
+   파일이 같은 무게로 읽혀 계층이 사라집니다. */
+.nav a{display:block;padding:6px 10px;border-radius:var(--r-sm);color:var(--ink-3);
+  font-size:15px;line-height:1.33}
+.nav a:hover{background:var(--line-soft);color:var(--ink-2);text-decoration:none}
+.nav a.d1{padding-left:22px;font-size:14px;color:var(--ink-3)}
+.nav a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.main{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) var(--toc)}
+.doc{min-width:0;padding:44px 52px 120px;max-width:880px;margin-inline:auto}
+.aside{padding:44px 20px;position:sticky;top:0;height:100vh;overflow-y:auto;
+  font-size:14px;line-height:1.43}
+.aside .lbl{font:600 12px/1.33 var(--sans);letter-spacing:.125px;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:10px}
+.aside a{display:block;padding:3px 0 3px 10px;border-left:2px solid var(--line);color:var(--ink-3)}
+.aside a.l3{padding-left:22px}
+.aside a:hover{color:var(--ink);text-decoration:none;border-left-color:var(--ink-3)}
+.aside a.on{color:var(--accent);border-left-color:var(--accent)}
+
+.doc h1{font-size:40px;font-weight:700;letter-spacing:-1px;line-height:1.1;
+  margin:0 0 20px;text-wrap:balance}
+.doc h2{font-size:26px;font-weight:700;letter-spacing:-.625px;line-height:1.23;
+  margin:56px 0 16px;padding-top:24px;border-top:1px solid var(--line);text-wrap:balance}
+.doc h3{font-size:22px;font-weight:700;letter-spacing:-.25px;line-height:1.27;
+  margin:32px 0 12px;text-wrap:balance}
+.doc h4{font-size:20px;font-weight:600;letter-spacing:-.125px;line-height:1.4;
+  margin:24px 0 10px;color:var(--ink-2)}
+.doc h1+*,.doc h2+*,.doc h3+*{margin-top:0}
+.doc p{margin:0 0 16px;max-width:68ch}
+.doc ul,.doc ol{margin:0 0 16px;padding-left:24px;max-width:68ch}
+.doc li{margin:6px 0}
+.doc p>code,.doc li code,.doc td code,.doc th code,.doc h1 code,.doc h2 code,.doc h3 code,.doc h4 code{
+  font:500 .86em/1.5 var(--mono);background:var(--bg-soft);border:1px solid var(--line-soft);
+  padding:1.5px 5px;border-radius:var(--r-xs)}
+.doc hr{border:0;border-top:1px solid var(--line);margin:36px 0}
+.anchor{margin-left:9px;color:var(--ink-3);opacity:0;font-weight:400;font-size:.7em}
+h1:hover .anchor,h2:hover .anchor,h3:hover .anchor{opacity:1}
+.anchor:hover{text-decoration:none;color:var(--accent)}
+
+.table-wrap{overflow-x:auto;margin:0 0 24px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.33}
+thead{background:var(--bg-soft)}
+thead.th-empty{display:none}
+th{text-align:left;font-weight:600;color:var(--ink-2);padding:11px 14px;
+  border-bottom:1px solid var(--line);white-space:nowrap;font-size:14px;letter-spacing:.125px}
+td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;
+  font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--bg-soft)}
+.doc td code,.doc th code{font-size:12.5px}
+td code{white-space:pre-wrap;word-break:break-word}
+.cell-marker{white-space:nowrap;width:1%}
+
+.chip{display:inline-block;font-size:12px;line-height:1.33;padding:3px 5px;border-radius:var(--r-sm);
+  border:1px solid currentColor;margin-right:3px}
+.chip-ok{color:var(--ok)} .chip-partial{color:var(--partial)} .chip-weak{color:var(--weak)}
+.chip-guess{color:var(--guess)} .chip-post{color:var(--post)} .chip-auth{color:var(--auth)}
+.chip-danger{color:var(--danger)} .chip-star{color:var(--star)} .chip-dead{color:var(--dead)}
+.method{font-weight:600;letter-spacing:.03em;font-size:.92em}
+.m-get{color:var(--ok)} .m-post{color:var(--post)} .m-wss,.m-ws{color:var(--accent)}
+.m-put{color:var(--partial)} .m-delete{color:var(--danger)}
+
+.code{position:relative;margin:0 0 24px;border:1px solid var(--line);border-radius:var(--r-lg);
+  background:var(--bg-soft);overflow:hidden}
+.code pre{margin:0;padding:14px 16px;overflow-x:auto}
+.code code{font:400 12.8px/1.7 var(--mono);color:var(--ink);white-space:pre}
+.code-lang{position:absolute;top:0;right:0;font:500 10px/1 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--line-soft);
+  padding:5px 8px;border-bottom-left-radius:6px}
+blockquote{margin:0 0 20px;padding:14px 18px;background:var(--bg-soft);
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 var(--r-lg) var(--r-lg) 0}
+blockquote>*:last-child{margin-bottom:0}
+blockquote h2,blockquote h3{margin-top:0;border-top:0;padding-top:0;font-size:15px}
+blockquote p{max-width:none}
+blockquote .table-wrap{background:var(--surface)}
+details{margin:0 0 24px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+summary{cursor:pointer;padding:11px 16px;font-size:13px;font-weight:500;color:var(--ink-2);
+  user-select:none;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"\25B8";display:inline-block;margin-right:8px;color:var(--ink-3);
+  transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+details[open] summary{border-bottom:1px solid var(--line)}
+details>.code{margin:0;border:0;border-radius:0;background:transparent}
+
+.results .hit{display:block;padding:9px 10px;border-radius:var(--r-sm);color:var(--ink-2)}
+.results .hit:hover{background:var(--line-soft);text-decoration:none}
+.results .hit b{display:block;color:var(--ink);font-size:15px;font-weight:600}
+.results .hit span{font-size:12px;color:var(--ink-3)}
+.results .none{padding:10px;font-size:14px;color:var(--ink-3)}
+mark{background:var(--sel);color:inherit;border-radius:2px;padding:0 1px}
+
+.topbar{display:none}
+.footnav{display:flex;gap:12px;margin-top:60px;padding-top:22px;border-top:1px solid var(--line)}
+.footnav a{flex:1;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-lg);
+  background:var(--surface);color:var(--ink)}
+.footnav a:hover{border-color:var(--accent);text-decoration:none}
+.footnav span{display:block;font-size:11px;color:var(--ink-3);margin-bottom:3px}
+.footnav .nx{text-align:right}
+
+@media(max-width:1400px){.main{grid-template-columns:minmax(0,1fr)}.aside{display:none}}
+@media(max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .side{position:fixed;inset:0 auto 0 0;width:280px;z-index:20;transform:translateX(-100%);
+    transition:transform .2s}
+  .side.open{transform:none}
+  .topbar{display:flex;align-items:center;gap:12px;padding:11px 16px;
+    border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:10}
+  .topbar button{padding:6px 10px;font-size:13px;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:6px;cursor:pointer}
+  .doc{padding:28px 20px 90px}
+  .doc h1{font-size:27px} .doc h2{font-size:20px}
+}
+</style>
+
+<div class="topbar">
+  <button id="menu" aria-label="목차 열기">&#9776;</button>
+</div>
+
+<div class="shell">
+  <nav class="side" id="side">
+    <div class="searchbox">
+      <input id="q" type="search" placeholder="엔드포인트·필드 검색  /" autocomplete="off" aria-label="검색">
+    </div>
+    <div class="nav" id="nav"></div>
+  </nav>
+  <div class="main">
+    <article class="doc" id="doc"></article>
+    <aside class="aside" id="aside"></aside>
+  </div>
+</div>
+
+<script>
+// 브라우저의 스크롤 복원이 앵커 이동을 덮습니다. 위치는 우리가 정합니다.
+if("scrollRestoration" in history) history.scrollRestoration="manual";
+
+// 사이트 이름은 위 <title> 태그가 유일한 출처입니다. 바꾸려면 거기만 고칩니다.
+// go() 가 이동할 때마다 document.title 을 덮어쓰므로 최초 값을 먼저 잡아둡니다.
+const TITLE=document.title;
+const NAV=__NAV__, PAGES=__PAGES__, INDEX=__INDEX__;
+const $=s=>document.querySelector(s);
+const nav=$("#nav"), doc=$("#doc"), aside=$("#aside"), q=$("#q");
+const ORDER=NAV.filter(n=>n.kind==="link"&&!n.frag).map(n=>n.page)
+  .filter((p,i,a)=>PAGES[p]&&a.indexOf(p)===i);
+
+// 접어둔 그룹. renderNav 는 이동할 때마다 다시 그리므로 밖에 둡니다.
+const collapsed=new Set();
+
+function renderNav(active){
+  // 지금 보고 있는 문서가 든 그룹은 접혀 있어도 펼칩니다.
+  let g=null;
+  for(const n of NAV){
+    if(n.kind==="group") g=n.label;
+    else if(g&&n.page===active) collapsed.delete(g);
+  }
+  let html="",open=false;
+  for(const n of NAV){
+    if(n.kind==="group"){
+      if(open) html+="</div>";
+      const hidden=collapsed.has(n.label);
+      html+='<button type="button" class="group" data-group="'+n.label+'" aria-expanded="'+
+            (!hidden)+'">'+n.label+'</button><div class="grp">';
+      open=true;
+    }else{
+      html+='<a href="#/'+n.page+(n.frag?"@"+n.frag:"")+'" data-nav class="'+(n.depth?"d1":"")+" "+
+            (n.page===active&&!n.frag?"on":"")+'">'+n.label+'</a>';
+    }
+  }
+  if(open) html+="</div>";
+  nav.innerHTML=html;
+}
+
+nav.addEventListener("click",function(e){
+  const b=e.target.closest(".group"); if(!b) return;
+  const label=b.dataset.group;
+  collapsed.has(label)?collapsed.delete(label):collapsed.add(label);
+  renderNav(location.hash.split("@")[0].replace(/^#\//,""));
+});
+function renderToc(page){
+  const t=(PAGES[page]&&PAGES[page].toc)||[];
+  aside.innerHTML=t.length
+    ?'<div class="lbl">이 문서에서</div>'+t.map(h=>
+       '<a href="#/'+page+'@'+h.id+'" data-nav class="'+(h.level===3?"l3":"")+'">'+h.text+'</a>').join("")
+    :"";
+}
+function footnav(page){
+  const i=ORDER.indexOf(page); if(i<0) return "";
+  const p=ORDER[i-1], n=ORDER[i+1];
+  return '<div class="footnav">'+
+    (p?'<a href="#/'+p+'" data-nav><span>이전</span>'+PAGES[p].title+'</a>':'<div style="flex:1"></div>')+
+    (n?'<a href="#/'+n+'" data-nav class="nx"><span>다음</span>'+PAGES[n].title+'</a>':'<div style="flex:1"></div>')+
+    '</div>';
+}
+function go(){
+  // 한글 제목은 해시에서 퍼센트 인코딩됩니다. 풀지 않으면 getElementById 가 못 찾습니다.
+  let raw=location.hash.replace(/^#\/?/,"");
+  try{raw=decodeURIComponent(raw)}catch(e){}
+  const parts=raw.split("@"), page=parts[0], frag=parts[1];
+  const key=PAGES[page]?page:"README";
+  doc.innerHTML=PAGES[key].html+footnav(key);
+  renderNav(key); renderToc(key);
+  document.title=(key==="README"?"":PAGES[key].title+" · ")+TITLE;
+  $("#side").classList.remove("open");
+  // ⚠️ 웹폰트가 붙기 전에 뛰면 안 됩니다. 폴백 폰트로 잡힌 레이아웃 기준으로
+  //    스크롤한 뒤 폰트가 적용되면 문서 높이가 바뀌어 엉뚱한 곳에 서 있게 됩니다
+  //    (실측: 목표 6721px 인데 최하단 11718px 에 고정). 준비된 다음에 뜁니다.
+  pending = frag || null;
+  // 웹폰트가 붙으면 문서 높이가 바뀝니다. 한 시점만 노리면 어긋나므로
+  // 렌더 직후·폰트 준비·load·짧은 지연까지 여러 번 맞춥니다.
+  // 이미 제자리면 instant 스크롤은 아무 일도 하지 않으니 중복은 무해합니다.
+  requestAnimationFrame(settle);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
+  addEventListener("load", settle, {once:true});
+  setTimeout(settle, 150);
+  setTimeout(settle, 500);
+  spy();
+}
+let pending = null;
+function settle(){
+  if(pending){
+    const el = document.getElementById(pending);
+    // behavior:"instant" — html 의 scroll-behavior:smooth 가 가로채지 않게
+    if(el){ el.scrollIntoView({behavior:"instant", block:"start"}); markToc(); return; }
+  }
+  window.scrollTo(0, 0);
+}
+addEventListener("hashchange",go);
+
+/* 우측 목차 현재 위치 표시.
+   IntersectionObserver 로 "교차 중"만 칠하면 제목과 제목 사이에서 표시가 사라집니다.
+   마지막으로 지나친 제목을 유지해야 읽는 위치가 보입니다. */
+let heads=[], tocLinks=[], ticking=false;
+function spy(){
+  heads=[].slice.call(doc.querySelectorAll("h2[id],h3[id]"));
+  tocLinks=[].slice.call(aside.querySelectorAll("a"));
+  markToc();
+}
+function markToc(){
+  if(!heads.length||!tocLinks.length) return;
+  let cur=heads[0];
+  for(const h of heads){ if(h.getBoundingClientRect().top<=120) cur=h; else break; }
+  tocLinks.forEach(function(a){a.classList.toggle("on",a.getAttribute("href").endsWith("@"+cur.id))});
+}
+addEventListener("scroll",function(){
+  if(ticking) return; ticking=true;
+  requestAnimationFrame(function(){markToc();ticking=false});
+},{passive:true});
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}
+function mark(s,re){return s.replace(new RegExp("("+re.source+")","ig"),"<mark>$1</mark>")}
+function slugify(t){
+  return t.trim().toLowerCase().replace(/`|\*\*/g,"")
+    .replace(/[^\p{L}\p{N}\s_-]/gu,"").replace(/\s+/g,"-");
+}
+q.addEventListener("input",function(){
+  const v=q.value.trim();
+  if(v.length<2){renderNav(location.hash.split("@")[0].replace(/^#\//,""));return;}
+  const re=new RegExp(esc(v),"i");
+  const hits=[];
+  for(const d of INDEX){
+    if(re.test(d.t)) hits.push({p:d.p,t:d.t,s:"문서",r:0});
+    for(const h of d.h) if(re.test(h)) hits.push({p:d.p,t:h,s:d.t,f:true,r:1});
+    if(re.test(d.b)){
+      const i=d.b.search(re);
+      hits.push({p:d.p,t:d.t,s:"…"+d.b.slice(Math.max(0,i-38),i+62).trim()+"…",r:2});
+    }
+  }
+  const ap=h=>h.p.startsWith('_work/')?1:0;   // 부록은 뒤로
+  hits.sort((a,b)=>(ap(a)-ap(b))||(a.r-b.r));
+  nav.innerHTML=hits.length
+    ?'<div class="group">검색 결과 '+hits.length+'</div><div class="results">'+
+      hits.slice(0,40).map(function(h){
+        return '<a class="hit" data-nav href="#/'+h.p+(h.f?"@"+slugify(h.t):"")+'"><b>'+
+          mark(h.t,re)+'</b><span>'+mark(h.s,re)+'</span></a>'}).join("")+'</div>'
+    :'<div class="none">일치하는 항목이 없습니다</div>';
+});
+document.addEventListener("click",function(e){
+  const a=e.target.closest("a[data-nav]"); if(!a) return;
+  if(a.getAttribute("href")===location.hash){e.preventDefault();go();}
+});
+$("#menu").onclick=function(){$("#side").classList.toggle("open")};
+
+addEventListener("keydown",function(e){
+  if(e.key==="/"&&document.activeElement!==q){e.preventDefault();q.focus()}
+  if(e.key==="Escape"&&document.activeElement===q){q.value="";q.dispatchEvent(new Event("input"));q.blur()}
+});
+
+if(!location.hash) location.hash="#/README";
+go();
+</script>
