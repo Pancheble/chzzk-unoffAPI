@@ -71,3 +71,9 @@ python book/check-links.py  # 링크 검사 <- 이거 필수다
 - **`streamKey` / `accTkn` 같은 건 확인하고 PR땡겨라.**
   크롬 sanitized HAR 은 쿠키랑 요청 헤더만 지우고 **응답 본문은 그대로**
 - 댓글, 채팅 응답에 남의 닉네임이랑 `userIdHash` 들어있다 그런데 알빠노
+
+## License
+Do What The Fuck You Want To Public License  
+당신 좆대로 하세요 공중 라이선스  
+
+See [LICENSE](./LICENSE) file.
